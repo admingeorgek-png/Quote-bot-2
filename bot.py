@@ -315,16 +315,6 @@ def get_content(category_key: str, user_id: int | None = None) -> str:
 # Command handlers
 # ---------------------------------------------------------------------------
 
-ABOUT_TEXT = (
-    "🌅 About LifeSpark ✨\n\n"
-    "LifeSpark sends you daily quotes, honest life advice, and gentle reminders "
-    "to help you stay grounded, motivated, and moving forward. Whether you need "
-    "a spark of motivation, a moment of reflection, or just someone to say "
-    "'what you're feeling is valid' — LifeSpark has a category for that.\n\n"
-    "You'll get one quote automatically every morning, and you can pull more "
-    "anytime using the commands or buttons below.\n\n"
-)
-
 COMMAND_LIST_TEXT = (
     "Commands:\n"
     "💬 /today - Today's Quote\n"
@@ -335,28 +325,8 @@ COMMAND_LIST_TEXT = (
     "🌙 /night - Night Reflection\n"
     "🫶 /feelings - Emotional Feelings\n"
     "🎲 /random - A surprise from any category\n"
-    "❓ /help - Show what this bot does and this list again\n"
     "/stop - unsubscribe from daily messages\n\n"
     "Tip: you can also just tap a button below instead of typing a command."
-)
-
-ABOUT_TEXT = (
-    "✨ About LifeSpark\n\n"
-    "LifeSpark sends you a daily spark of quotes, advice, motivation, and gentle "
-    "reflection across 7 categories, plus one automatic message every morning.\n\n"
-    "🌍 Where the words come from\n"
-    "Thousands of quotes and original reflections, including real, verified words "
-    "from voices around the world such as:\n"
-    "Herbert Macaulay, Nelson Mandela, Mahatma Gandhi, Martin Luther King Jr., "
-    "Maya Angelou, Chinua Achebe, Wole Soyinka, Wangari Maathai, Desmond Tutu, "
-    "Rabindranath Tagore, Rumi, Gabriel García Márquez, Frida Kahlo, Viktor Frankl, "
-    "James Baldwin, Audre Lorde, Toni Morrison, C.S. Lewis, Malala Yousafzai, "
-    "Brené Brown, Carol Dweck, Yuval Noah Harari, bell hooks, Albert Einstein, "
-    "Winston Churchill, Confucius, Buddha, and many more, alongside original writing "
-    "created for LifeSpark.\n\n"
-    "🔁 No repeats\n"
-    "Each quote won't repeat for you in a category until you've seen every quote in it.\n\n"
-    f"{COMMAND_LIST_TEXT}"
 )
 
 # Maps the exact text shown on each menu button back to its category key,
@@ -388,7 +358,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     users.add(update.effective_chat.id)
     save_users(users)
     await update.message.reply_text(
-        ABOUT_TEXT + COMMAND_LIST_TEXT,
+        f"Welcome! You're now subscribed to daily quotes and advice.\n\n{COMMAND_LIST_TEXT}",
         reply_markup=MENU_KEYBOARD,
     )
 
@@ -398,10 +368,6 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     users.discard(update.effective_chat.id)
     save_users(users)
     await update.message.reply_text("You've been unsubscribed from daily messages. Send /start anytime to rejoin.")
-
-
-async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(ABOUT_TEXT, reply_markup=MENU_KEYBOARD)
 
 
 async def random_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -456,7 +422,6 @@ def main() -> None:
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("stop", stop))
-    app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CommandHandler("random", random_cmd))
     for key in CATEGORIES:
         app.add_handler(CommandHandler(key, category_cmd))
